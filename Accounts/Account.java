@@ -1,56 +1,86 @@
 package Accounts;
 
-import Bank.Bank;
 import java.util.ArrayList;
+import Bank.Bank;
 
 public abstract class Account {
-    private Bank BANK;
-    private String ACCOUNTNUMBER;
-    private String OWNERFNAME;
-    private String OWNERLNAME;
-    private String OWNEREMAIL;
+
+    private final Bank bank;
+    private final String accountNumber;
+    private final String ownerFname;
+    private final String ownerLname;
+    private final String ownerEmail;
     private String pin;
-    private ArrayList<Transaction>TRANSACTIONS;
+    private final ArrayList<Transaction> transactions;
 
-    public Account(Bank BANK, String ACCOUNTNUMBER, String OWNERFNAME, String OWNERLNAME, String OWNEREMAIL, String pin) {
-        this.BANK = BANK;
-        this.ACCOUNTNUMBER = ACCOUNTNUMBER;
-        this.OWNERFNAME = OWNERFNAME;
-        this.OWNERLNAME = OWNERLNAME;
-        this.OWNEREMAIL = OWNEREMAIL;
+    // Add pin attribute
+    public Account(Bank bank, String accountNumber, String ownerFname, String ownerLname, String ownerEmail, String pin) {
+        this.bank = bank;
+        this.accountNumber = accountNumber;
+        this.ownerFname = ownerFname;
+        this.ownerLname = ownerLname;
+        this.ownerEmail = ownerEmail;
         this.pin = pin;
+        this.transactions = new ArrayList<>();
     }
 
-    public String getOwnerFullname() {
-        return this.OWNERLNAME + ", " + this.OWNERFNAME;
+    // Get Owner Full Name
+    public String getOwnerFullName() {
+        return this.ownerLname + ", " + this.ownerFname;
     }
 
-    public void addNewTrancsaction(String accountNum, Transaction.Transactions type, String description) {
-        Transaction transaction = new Transaction(accountNum, type, description);
-        TRANSACTIONS.add(transaction);
+    // Getter for pin
+    public String getPin() {
+        return this.pin;
     }
 
-    public String getTransactionsInfo() {
-        StringBuilder info = new StringBuilder();
-        for (Transaction transaction : TRANSACTIONS) {
-            info.append(transaction.toString()).append("\n");
-        }
-        return info.toString();
-    }
-
+    // Get Account number
     public String getAccountNumber() {
-        return this.ACCOUNTNUMBER;
+        return accountNumber;
     }
 
-    @Override
-    public String toString() {
-        return "Account{" +
-                "BANK=" + BANK +
-                ", ACCOUNTNUMBER='" + ACCOUNTNUMBER + '\'' +
-                ", OWNERFNAME='" + OWNERFNAME + '\'' +
-                ", OWNERLNAME='" + OWNERLNAME + '\'' +
-                ", OWNEREMAIL='" + OWNEREMAIL + '\'' +
-                ", TRANSACTIONS=" + TRANSACTIONS +
-                '}';
+    // Getter for bank
+    public Bank getBANK() {
+        return this.bank;
+    }
+
+    // Getter for owner email
+    public String getOwnerEmail() {
+        return this.ownerEmail;
+    }
+
+    /**
+     * Add a new transaction log to this account.
+     * @param account Account number of source account that triggered this transaction.
+     * @param type Type of transaction triggered.
+     * @param description Description of the transaction.
+     */
+    public void addNewTransaction(String account, Transaction.Transactions type, String description) {
+        transactions.add(new Transaction(account, type, description));
+    }
+
+    /**
+     * Get all information for every transaction that has been logged into this account.
+     * @return List of transactions in string format.
+     */
+    public String getTransactionsInfo() {
+        StringBuilder transactionInfo = new StringBuilder();
+        for (Transaction transaction : transactions) {
+            transactionInfo.append("Account: ").append(transaction.accountNumber)
+                    .append(", Type: ").append(transaction.transactionType)
+                    .append(", Description: ").append(transaction.description)
+                    .append("\n");
+        }
+        return transactionInfo.toString();
+    }
+
+    // Abstract method to be implemented by subclasses
+    public abstract String getAccountType();
+
+
+    public String toString(String description) {
+        return "Account: " + getAccountNumber()
+                + "\nType: " + getAccountType()
+                + "\nDescription" + description;
     }
 }
